@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using PartyPlanning;
 using PartyPlanning.Data;
 using PartyPlanning.Model;
 using System.Net;
@@ -13,7 +12,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
-namespace GameTrip.API;
+namespace PartyPlanning;
 
 internal class Startup
 {

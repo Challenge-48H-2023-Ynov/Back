@@ -58,22 +58,6 @@ namespace PartyPlanning.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Party",
-                columns: table => new
-                {
-                    IdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Adresse = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateFin = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Party", x => x.IdParty);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -177,6 +161,28 @@ namespace PartyPlanning.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Party",
+                columns: table => new
+                {
+                    IdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Adresse = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateFin = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Party", x => x.IdParty);
+                    table.ForeignKey(
+                        name: "FK_Party_AspNetUsers_IdUser",
+                        column: x => x.IdUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -360,6 +366,11 @@ namespace PartyPlanning.Migrations
                 name: "IX_Participation_IdUser",
                 table: "Participation",
                 column: "IdUser");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Party_IdUser",
+                table: "Party",
+                column: "IdUser");
         }
 
         /// <inheritdoc />
@@ -396,10 +407,10 @@ namespace PartyPlanning.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Party");
 
             migrationBuilder.DropTable(
-                name: "Party");
+                name: "AspNetUsers");
         }
     }
 }

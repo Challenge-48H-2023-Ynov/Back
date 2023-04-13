@@ -86,6 +86,7 @@ namespace PartyPlanning.Data
                 u.HasMany(u => u.Apports).WithOne(a => a.User).HasForeignKey(a => a.IdUser).OnDelete(DeleteBehavior.Cascade);
                 u.HasMany(u => u.Participations).WithOne(u => u.User).HasForeignKey(u => u.IdUser).OnDelete(DeleteBehavior.Cascade);
                 u.HasMany(u => u.Messages).WithOne(u => u.User).HasForeignKey(u => u.IdUser).OnDelete(DeleteBehavior.Cascade);
+                u.HasMany(u => u.Parties).WithOne(u => u.User).HasForeignKey(u => u.IdUser).OnDelete(DeleteBehavior.NoAction);
             });
         }
 

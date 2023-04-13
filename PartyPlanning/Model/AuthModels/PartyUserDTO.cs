@@ -1,7 +1,7 @@
 ﻿using PartyPlanning.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace PartyPlanning.Model.Auth;
+namespace PartyPlanning.Model.AuthModels;
 
 public class PartyUserDTO
 {

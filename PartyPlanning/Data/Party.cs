@@ -3,6 +3,8 @@
     public class Party
     {
         public Guid IdParty { get; set; }
+        public Guid IdUser { get; set; }
+        public virtual PartyUser? User { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Adresse { get; set; }

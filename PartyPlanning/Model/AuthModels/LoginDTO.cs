@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PartyPlanning.Model.Login
+namespace PartyPlanning.Model.AuthModels
 {
     public class LoginDTO
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PartyPlanning.Model.Auth
+namespace PartyPlanning.Model.AuthModels
 {
     public class ResetPasswordDTO
     {

@@ -12,7 +12,7 @@ using PartyPlanning.Data;
 namespace PartyPlanning.Migrations
 {
     [DbContext(typeof(PartyContext))]
-    [Migration("20230413214700_initial")]
+    [Migration("20230413225637_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -287,12 +287,17 @@ namespace PartyPlanning.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<Guid>("IdUser")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("IdParty");
+
+                    b.HasIndex("IdUser");
 
                     b.ToTable("Party");
                 });
@@ -522,6 +527,17 @@ namespace PartyPlanning.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PartyPlanning.Data.Party", b =>
+                {
+                    b.HasOne("PartyPlanning.Data.PartyUser", "User")
+                        .WithMany("Parties")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PartyPlanning.Data.Participation", b =>
                 {
                     b.Navigation("Apports");
@@ -547,6 +563,8 @@ namespace PartyPlanning.Migrations
                     b.Navigation("Messages");
 
                     b.Navigation("Participations");
+
+                    b.Navigation("Parties");
                 });
 #pragma warning restore 612, 618
         }

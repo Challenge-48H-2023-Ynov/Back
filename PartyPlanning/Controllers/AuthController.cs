@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PartyPlanning.Data;
 using PartyPlanning.Model;
-using PartyPlanning.Model.Auth;
-using PartyPlanning.Model.Login;
+using PartyPlanning.Model.AuthModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -30,6 +29,7 @@ public class AuthController : ControllerBase
     /// Initialise les table avec les rôles et l'utilisateur Admin
     /// </summary>
     /// <response code="200 + Message"></response>
+    [AllowAnonymous]
     [HttpPost]
     [Route("Initialize")]
     public async Task<IActionResult> Initialize([FromServices] DBInitializer dBInitializer)
