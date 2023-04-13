@@ -30,7 +30,6 @@ public class AuthController : ControllerBase
     /// Initialise les table avec les rôles et l'utilisateur Admin
     /// </summary>
     /// <response code="200 + Message"></response>
-    [AllowAnonymous]
     [HttpPost]
     [Route("Initialize")]
     public async Task<IActionResult> Initialize([FromServices] DBInitializer dBInitializer)
