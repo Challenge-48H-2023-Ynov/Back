@@ -9,8 +9,9 @@ namespace PartyPlanning.Data
         #region Properties
 
         public DbSet<Apport> Apport { get; set; }
-        public DbSet<Car> Car { get; set; }
+        public DbSet<Participation> Participation { get; set; }
         public DbSet<Message> Message { get; set; }
+        public DbSet<Invitation> Invitation { get; set; }
         public DbSet<Party> Party { get; set; }
         public DbSet<PartyUser> PartyUsers { get; set; }
 
@@ -42,14 +43,24 @@ namespace PartyPlanning.Data
                 a.Property(a => a.Nom).HasMaxLength(255);
             });
 
-            builder.Entity<Car>(c =>
+            builder.Entity<Participation>(p =>
             {
-                c.HasKey(c => c.IdCar);
+                p.HasKey(p => new {p.IdParty,p.IdUser});
+                p.Property(p => p.Role).HasMaxLength(255);
+
+                p.HasMany(p => p.Apports).WithOne(p => p.Participation  ).HasForeignKey(p => new {p.IdParty,p.IdUser}).OnDelete(DeleteBehavior.NoAction);
             });
 
             builder.Entity<Message>(m =>
             {
                 m.HasKey(m => m.IdMessage);
+            });
+            
+            builder.Entity<Invitation>(i =>
+            {
+                i.HasKey(i => new {i.IdParty,i.IdUser});
+                i.HasOne(i => i.User).WithMany(i => i.Invitations).HasForeignKey(i => i.IdUser).OnDelete(DeleteBehavior.Cascade);
+                i.HasOne(i => i.Party).WithMany(i => i.Invitations).HasForeignKey(i => i.IdParty).OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Party>(p =>
@@ -59,20 +70,22 @@ namespace PartyPlanning.Data
                 p.Property(p => p.Description).HasMaxLength(255);
                 p.Property(p => p.Adresse).HasMaxLength(255);
 
-                p.HasMany(p => p.Members).WithMany(u => u.Parties);
-                p.HasMany(p => p.Messages).WithOne(m => m.Party).HasForeignKey(m => m.IdMessage).OnDelete(DeleteBehavior.Cascade);
-                p.HasMany(p => p.Apports).WithMany(a => a.Parties);
+                p.HasMany(p => p.Participations).WithOne(p => p.Party).HasForeignKey(p => p.IdParty).OnDelete(DeleteBehavior.Cascade);
+                p.HasMany(p => p.Besoins).WithOne(p => p.Party).HasForeignKey(p => p.IdParty).OnDelete(DeleteBehavior.Cascade);
+                p.HasMany(p => p.Messages).WithOne(p => p.Party).HasForeignKey(p => p.IdParty).OnDelete(DeleteBehavior.Cascade);
+
             });
 
             builder.Entity<PartyUser>(u =>
             {
                 u.Property(u => u.FirstName).HasMaxLength(255);
                 u.Property(u => u.LastName).HasMaxLength(255);
-                u.Property(u => u.Biography).HasMaxLength(255);
                 u.Property(u => u.Snap).HasMaxLength(255);
                 u.Property(u => u.Insta).HasMaxLength(255);
 
-                u.HasOne(u => u.Car).WithOne(c => c.Owner).HasForeignKey<Car>(c => c.IdCar);
+                u.HasMany(u => u.Apports).WithOne(a => a.User).HasForeignKey(a => a.IdUser).OnDelete(DeleteBehavior.Cascade);
+                u.HasMany(u => u.Participations).WithOne(u => u.User).HasForeignKey(u => u.IdUser).OnDelete(DeleteBehavior.Cascade);
+                u.HasMany(u => u.Messages).WithOne(u => u.User).HasForeignKey(u => u.IdUser).OnDelete(DeleteBehavior.Cascade);
             });
         }
 

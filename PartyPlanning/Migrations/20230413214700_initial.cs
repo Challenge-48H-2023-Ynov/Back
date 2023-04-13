@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PartyPlanning.Migrations
 {
     /// <inheritdoc />
-    public partial class setup : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,15 +29,14 @@ namespace PartyPlanning.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     DateOfBrith = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Biography = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HavePermis = table.Column<bool>(type: "bit", nullable: false),
                     Snap = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Insta = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -55,7 +54,7 @@ namespace PartyPlanning.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.IdUser);
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,7 +65,8 @@ namespace PartyPlanning.Migrations
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Adresse = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateFin = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,26 +95,6 @@ namespace PartyPlanning.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Apport",
-                columns: table => new
-                {
-                    IdApport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Nom = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    UserIdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Apport", x => x.IdApport);
-                    table.ForeignKey(
-                        name: "FK_Apport_AspNetUsers_UserIdUser",
-                        column: x => x.UserIdUser,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "IdUser");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -131,7 +111,7 @@ namespace PartyPlanning.Migrations
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "IdUser",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -151,7 +131,7 @@ namespace PartyPlanning.Migrations
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "IdUser",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -175,7 +155,7 @@ namespace PartyPlanning.Migrations
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "IdUser",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -195,26 +175,31 @@ namespace PartyPlanning.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "IdUser",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Car",
+                name: "Invitation",
                 columns: table => new
                 {
-                    IdCar = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlaceDispo = table.Column<int>(type: "int", nullable: false),
-                    IsSAM = table.Column<bool>(type: "bit", nullable: false)
+                    IdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Car", x => x.IdCar);
+                    table.PrimaryKey("PK_Invitation", x => new { x.IdParty, x.IdUser });
                     table.ForeignKey(
-                        name: "FK_Car_AspNetUsers_IdCar",
-                        column: x => x.IdCar,
+                        name: "FK_Invitation_AspNetUsers_IdUser",
+                        column: x => x.IdUser,
                         principalTable: "AspNetUsers",
-                        principalColumn: "IdUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invitation_Party_IdParty",
+                        column: x => x.IdParty,
+                        principalTable: "Party",
+                        principalColumn: "IdParty",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -224,76 +209,98 @@ namespace PartyPlanning.Migrations
                 {
                     IdMessage = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SendDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SendDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Message", x => x.IdMessage);
                     table.ForeignKey(
-                        name: "FK_Message_Party_IdMessage",
-                        column: x => x.IdMessage,
-                        principalTable: "Party",
-                        principalColumn: "IdParty",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PartyPartyUser",
-                columns: table => new
-                {
-                    MembersIdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PartiesIdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PartyPartyUser", x => new { x.MembersIdUser, x.PartiesIdParty });
-                    table.ForeignKey(
-                        name: "FK_PartyPartyUser_AspNetUsers_MembersIdUser",
-                        column: x => x.MembersIdUser,
+                        name: "FK_Message_AspNetUsers_IdUser",
+                        column: x => x.IdUser,
                         principalTable: "AspNetUsers",
-                        principalColumn: "IdUser",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PartyPartyUser_Party_PartiesIdParty",
-                        column: x => x.PartiesIdParty,
+                        name: "FK_Message_Party_IdParty",
+                        column: x => x.IdParty,
                         principalTable: "Party",
                         principalColumn: "IdParty",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ApportParty",
+                name: "Participation",
                 columns: table => new
                 {
-                    ApportsIdApport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PartiesIdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    IdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    PlaceDispo = table.Column<int>(type: "int", nullable: false),
+                    IsSAM = table.Column<bool>(type: "bit", nullable: false),
+                    DateArrivee = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateDepart = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ApportParty", x => new { x.ApportsIdApport, x.PartiesIdParty });
+                    table.PrimaryKey("PK_Participation", x => new { x.IdParty, x.IdUser });
                     table.ForeignKey(
-                        name: "FK_ApportParty_Apport_ApportsIdApport",
-                        column: x => x.ApportsIdApport,
-                        principalTable: "Apport",
-                        principalColumn: "IdApport",
+                        name: "FK_Participation_AspNetUsers_IdUser",
+                        column: x => x.IdUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ApportParty_Party_PartiesIdParty",
-                        column: x => x.PartiesIdParty,
+                        name: "FK_Participation_Party_IdParty",
+                        column: x => x.IdParty,
+                        principalTable: "Party",
+                        principalColumn: "IdParty",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Apport",
+                columns: table => new
+                {
+                    IdApport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Nom = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    IdParty = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IdUser = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Apport", x => x.IdApport);
+                    table.ForeignKey(
+                        name: "FK_Apport_AspNetUsers_IdUser",
+                        column: x => x.IdUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Apport_Participation_IdParty_IdUser",
+                        columns: x => new { x.IdParty, x.IdUser },
+                        principalTable: "Participation",
+                        principalColumns: new[] { "IdParty", "IdUser" });
+                    table.ForeignKey(
+                        name: "FK_Apport_Party_IdParty",
+                        column: x => x.IdParty,
                         principalTable: "Party",
                         principalColumn: "IdParty",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Apport_UserIdUser",
+                name: "IX_Apport_IdParty_IdUser",
                 table: "Apport",
-                column: "UserIdUser");
+                columns: new[] { "IdParty", "IdUser" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApportParty_PartiesIdParty",
-                table: "ApportParty",
-                column: "PartiesIdParty");
+                name: "IX_Apport_IdUser",
+                table: "Apport",
+                column: "IdUser");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -335,16 +342,31 @@ namespace PartyPlanning.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PartyPartyUser_PartiesIdParty",
-                table: "PartyPartyUser",
-                column: "PartiesIdParty");
+                name: "IX_Invitation_IdUser",
+                table: "Invitation",
+                column: "IdUser");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_IdParty",
+                table: "Message",
+                column: "IdParty");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Message_IdUser",
+                table: "Message",
+                column: "IdUser");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Participation_IdUser",
+                table: "Participation",
+                column: "IdUser");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApportParty");
+                name: "Apport");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -362,25 +384,22 @@ namespace PartyPlanning.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Car");
+                name: "Invitation");
 
             migrationBuilder.DropTable(
                 name: "Message");
 
             migrationBuilder.DropTable(
-                name: "PartyPartyUser");
-
-            migrationBuilder.DropTable(
-                name: "Apport");
+                name: "Participation");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Party");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Party");
         }
     }
 }

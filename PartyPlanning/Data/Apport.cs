@@ -7,7 +7,13 @@
         public string Nom { get; set; }
         public int Quantity { get; set; }
 
-        public ICollection<Party>? Parties { get; set; }
+        public virtual Participation? Participation { get; set; }
+
+        public Guid? IdParty { get; set; }
+        public virtual Party? Party { get; set; }
+
+        public Guid? IdUser { get; set; }
         public virtual PartyUser? User { get; set; }
+
     }
 }

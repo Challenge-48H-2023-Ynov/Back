@@ -12,8 +12,8 @@ using PartyPlanning.Data;
 namespace PartyPlanning.Migrations
 {
     [DbContext(typeof(PartyContext))]
-    [Migration("20230413145227_setup")]
-    partial class setup
+    [Migration("20230413214700_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace PartyPlanning.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ApportParty", b =>
-                {
-                    b.Property<Guid>("ApportsIdApport")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PartiesIdParty")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ApportsIdApport", "PartiesIdParty");
-
-                    b.HasIndex("PartiesIdParty");
-
-                    b.ToTable("ApportParty");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
@@ -171,25 +156,16 @@ namespace PartyPlanning.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PartyPartyUser", b =>
-                {
-                    b.Property<Guid>("MembersIdUser")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PartiesIdParty")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MembersIdUser", "PartiesIdParty");
-
-                    b.HasIndex("PartiesIdParty");
-
-                    b.ToTable("PartyPartyUser");
-                });
-
             modelBuilder.Entity("PartyPlanning.Data.Apport", b =>
                 {
                     b.Property<Guid>("IdApport")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("IdParty")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("IdUser")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nom")
@@ -205,20 +181,71 @@ namespace PartyPlanning.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<Guid?>("UserIdUser")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("IdApport");
 
-                    b.HasIndex("UserIdUser");
+                    b.HasIndex("IdUser");
+
+                    b.HasIndex("IdParty", "IdUser");
 
                     b.ToTable("Apport");
                 });
 
-            modelBuilder.Entity("PartyPlanning.Data.Car", b =>
+            modelBuilder.Entity("PartyPlanning.Data.Invitation", b =>
                 {
-                    b.Property<Guid>("IdCar")
+                    b.Property<Guid>("IdParty")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("IdParty", "IdUser");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("Invitation");
+                });
+
+            modelBuilder.Entity("PartyPlanning.Data.Message", b =>
+                {
+                    b.Property<Guid>("IdMessage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("IdParty")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("IdMessage");
+
+                    b.HasIndex("IdParty");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("Message");
+                });
+
+            modelBuilder.Entity("PartyPlanning.Data.Participation", b =>
+                {
+                    b.Property<Guid>("IdParty")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateArrivee")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateDepart")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsSAM")
                         .HasColumnType("bit");
@@ -226,26 +253,16 @@ namespace PartyPlanning.Migrations
                     b.Property<int>("PlaceDispo")
                         .HasColumnType("int");
 
-                    b.HasKey("IdCar");
-
-                    b.ToTable("Car");
-                });
-
-            modelBuilder.Entity("PartyPlanning.Data.Message", b =>
-                {
-                    b.Property<Guid>("IdMessage")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
+                    b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("SendDate")
-                        .HasColumnType("datetime2");
+                    b.HasKey("IdParty", "IdUser");
 
-                    b.HasKey("IdMessage");
+                    b.HasIndex("IdUser");
 
-                    b.ToTable("Message");
+                    b.ToTable("Participation");
                 });
 
             modelBuilder.Entity("PartyPlanning.Data.Party", b =>
@@ -259,7 +276,10 @@ namespace PartyPlanning.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("DateFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateStart")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -279,7 +299,7 @@ namespace PartyPlanning.Migrations
 
             modelBuilder.Entity("PartyPlanning.Data.PartyUser", b =>
                 {
-                    b.Property<Guid>("IdUser")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -287,9 +307,7 @@ namespace PartyPlanning.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Biography")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -312,9 +330,6 @@ namespace PartyPlanning.Migrations
 
                     b.Property<bool>("HavePermis")
                         .HasColumnType("bit");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Insta")
                         .HasMaxLength(255)
@@ -362,7 +377,7 @@ namespace PartyPlanning.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("IdUser");
+                    b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -373,21 +388,6 @@ namespace PartyPlanning.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("ApportParty", b =>
-                {
-                    b.HasOne("PartyPlanning.Data.Apport", null)
-                        .WithMany()
-                        .HasForeignKey("ApportsIdApport")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PartyPlanning.Data.Party", null)
-                        .WithMany()
-                        .HasForeignKey("PartiesIdParty")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -441,62 +441,112 @@ namespace PartyPlanning.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PartyPartyUser", b =>
-                {
-                    b.HasOne("PartyPlanning.Data.PartyUser", null)
-                        .WithMany()
-                        .HasForeignKey("MembersIdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PartyPlanning.Data.Party", null)
-                        .WithMany()
-                        .HasForeignKey("PartiesIdParty")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PartyPlanning.Data.Apport", b =>
                 {
+                    b.HasOne("PartyPlanning.Data.Party", "Party")
+                        .WithMany("Besoins")
+                        .HasForeignKey("IdParty")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("PartyPlanning.Data.PartyUser", "User")
-                        .WithMany("apports")
-                        .HasForeignKey("UserIdUser");
+                        .WithMany("Apports")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PartyPlanning.Data.Participation", "Participation")
+                        .WithMany("Apports")
+                        .HasForeignKey("IdParty", "IdUser")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Participation");
+
+                    b.Navigation("Party");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PartyPlanning.Data.Car", b =>
+            modelBuilder.Entity("PartyPlanning.Data.Invitation", b =>
                 {
-                    b.HasOne("PartyPlanning.Data.PartyUser", "Owner")
-                        .WithOne("Car")
-                        .HasForeignKey("PartyPlanning.Data.Car", "IdCar")
+                    b.HasOne("PartyPlanning.Data.Party", "Party")
+                        .WithMany("Invitations")
+                        .HasForeignKey("IdParty")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.HasOne("PartyPlanning.Data.PartyUser", "User")
+                        .WithMany("Invitations")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Party");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PartyPlanning.Data.Message", b =>
                 {
                     b.HasOne("PartyPlanning.Data.Party", "Party")
                         .WithMany("Messages")
-                        .HasForeignKey("IdMessage")
+                        .HasForeignKey("IdParty")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PartyPlanning.Data.PartyUser", "User")
+                        .WithMany("Messages")
+                        .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Party");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PartyPlanning.Data.Participation", b =>
+                {
+                    b.HasOne("PartyPlanning.Data.Party", "Party")
+                        .WithMany("Participations")
+                        .HasForeignKey("IdParty")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PartyPlanning.Data.PartyUser", "User")
+                        .WithMany("Participations")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Party");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PartyPlanning.Data.Participation", b =>
+                {
+                    b.Navigation("Apports");
                 });
 
             modelBuilder.Entity("PartyPlanning.Data.Party", b =>
                 {
+                    b.Navigation("Besoins");
+
+                    b.Navigation("Invitations");
+
                     b.Navigation("Messages");
+
+                    b.Navigation("Participations");
                 });
 
             modelBuilder.Entity("PartyPlanning.Data.PartyUser", b =>
                 {
-                    b.Navigation("Car");
+                    b.Navigation("Apports");
 
-                    b.Navigation("apports");
+                    b.Navigation("Invitations");
+
+                    b.Navigation("Messages");
+
+                    b.Navigation("Participations");
                 });
 #pragma warning restore 612, 618
         }
