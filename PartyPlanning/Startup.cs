@@ -177,6 +177,7 @@ internal class Startup
     private void AddServices(IServiceCollection services)
     {
         services.AddSingleton(Configuration.GetSection("JWTSettings").Get<JWTSettings>());
+        services.AddScoped<DBInitializer>();
     }
 
     private void AddIdentity(IServiceCollection services)

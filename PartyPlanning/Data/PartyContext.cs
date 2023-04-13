@@ -66,7 +66,6 @@ namespace PartyPlanning.Data
 
             builder.Entity<PartyUser>(u =>
             {
-                u.HasKey(u => u.IdUser);
                 u.Property(u => u.FirstName).HasMaxLength(255);
                 u.Property(u => u.LastName).HasMaxLength(255);
                 u.Property(u => u.Biography).HasMaxLength(255);

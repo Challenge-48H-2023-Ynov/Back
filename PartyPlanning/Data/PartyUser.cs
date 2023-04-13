@@ -4,7 +4,6 @@ namespace PartyPlanning.Data;
 
 public class PartyUser : IdentityUser<Guid>
 {
-    public Guid IdUser { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTime DateOfBrith { get; set; }
