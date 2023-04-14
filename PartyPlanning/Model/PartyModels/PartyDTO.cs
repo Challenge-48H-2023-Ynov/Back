@@ -6,7 +6,11 @@ public class PartyDTO
 {
     public Guid IdParty { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
+    public string Adress { get; set; }
     public string Maker { get; set; }
+    public DateTime DateStart { get; set; }
+    public DateTime DateEnd { get; set; }
 }
 
 public static class PartyMapper
@@ -17,7 +21,11 @@ public static class PartyMapper
         {
             IdParty = party.IdParty,
             Name = party.Name,
-            Maker = party.User.UserName
+            Description = party.Description,
+            Adress = party.Adresse,
+            Maker = party.User.UserName,
+            DateStart = party.DateStart,
+            DateEnd = party.DateFin
         };
     }
 
