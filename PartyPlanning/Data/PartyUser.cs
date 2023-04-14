@@ -13,7 +13,7 @@ public class PartyUser : IdentityUser<Guid>
     public string? Insta { get; set; }
 
     public ICollection<Participation>? Participations { get; set; }
-    public ICollection<Party>? Parties{ get; set; }
+    public ICollection<Party>? Parties { get; set; }
     public ICollection<Apport>? Apports { get; set; }
     public ICollection<Message>? Messages { get; set; }
     public ICollection<Invitation>? Invitations { get; set; }
