@@ -93,7 +93,7 @@ public class AuthController : ControllerBase
             SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(authClaims),
-                Expires = DateTime.UtcNow.AddHours(_jwtSettings.DurationTime),
+                Expires = DateTime.UtcNow.AddDays(_jwtSettings.DurationTime),
                 Issuer = _jwtSettings.ValidIssuer,
                 Audience = _jwtSettings.ValidAudience,
                 SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
