@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PartyPlanning.Data;
-using PartyPlanning.Model;
 using PartyPlanning.Model.PartyModels;
-using System.Security.Claims;
 
 namespace PartyPlanning.Controllers;
 
@@ -32,7 +30,7 @@ public class PartyController : ControllerBase
         List<Party> parties = await _context.Party.Include(party => party.User).ToListAsync();
         return parties.ToDTOList();
     }
-    
+
     [HttpGet]
     [Route("{IdParty}")]
     public async Task<ActionResult<PartyDTO>> GetParty([FromRoute] Guid IdParty)
@@ -102,7 +100,7 @@ public class PartyController : ControllerBase
             return NotFound();
         }
 
-        return Ok($"Part successfully modified");
+        return Ok($"Party with id : ${IdParty} successfully modified");
     }
 
     [HttpDelete]
@@ -124,9 +122,9 @@ public class PartyController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e);
+            return BadRequest(e.InnerException);
         }
-     
+
 
         return NoContent();
     }
