@@ -78,7 +78,7 @@ public class MessageController : ControllerBase
         Party? party = await _context.Party.FirstOrDefaultAsync(p => p.IdParty == IdParty);
         if (party == null) return NotFound("Paty not found");
 
-        if (user.Participations.Any(p => p.IdParty != IdParty) || party.IdUser == user.Id) return BadRequest("L'Utilisateur n'est pas dans la party");
+        if (user.Participations.Any(p => p.IdParty != IdParty) && party.IdUser != user.Id) return BadRequest("L'Utilisateur n'est pas dans la party");
 
         Message message = new()
         {
