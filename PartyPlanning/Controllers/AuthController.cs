@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PartyPlanning.Data;
 using PartyPlanning.Model;
@@ -24,6 +25,15 @@ public class AuthController : ControllerBase
         _userManager = userManager;
         _jwtSettings = jwtSettings;
     }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("")]
+    public async Task<List<PartyUser>> GetAllUser()
+    {
+        return await _userManager.Users.ToListAsync();
+    }
+
 
     /// <summary>
     /// Initialise les table avec les rôles et l'utilisateur Admin
@@ -53,7 +63,7 @@ public class AuthController : ControllerBase
     ///     "password": "NMdRx$HqyT8jX6"
     /// }
     /// </remarks>
-[AllowAnonymous]
+    [AllowAnonymous]
     [HttpPost]
     [Route("Login")]
     public async Task<ActionResult<TokenDTO>> Login([FromBody] LoginDTO dto)
