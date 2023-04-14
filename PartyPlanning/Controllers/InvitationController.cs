@@ -100,7 +100,7 @@ public class InvitationController : ControllerBase
 
     [HttpDelete]
     [Route("{IdParty}/{IdUser}")]
-    public async Task<IActionResult> GetParties([FromRoute] Guid IdParty, Guid IdUser)
+    public async Task<IActionResult> DeleteInvitation([FromRoute] Guid IdParty, Guid IdUser)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 

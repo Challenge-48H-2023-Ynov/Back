@@ -107,7 +107,7 @@ public class PartyController : ControllerBase
 
     [HttpDelete]
     [Route("{IdParty}")]
-    public async Task<IActionResult> GetParties([FromRoute] Guid IdParty)
+    public async Task<IActionResult> DeletePartie([FromRoute] Guid IdParty)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         Party? party = await _context.Party.FirstOrDefaultAsync(p => p.IdParty == IdParty);
