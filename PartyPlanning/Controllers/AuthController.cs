@@ -34,7 +34,6 @@ public class AuthController : ControllerBase
         return await _userManager.Users.ToListAsync();
     }
 
-
     /// <summary>
     /// Initialise les table avec les rôles et l'utilisateur Admin
     /// </summary>
