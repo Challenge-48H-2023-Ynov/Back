@@ -46,12 +46,12 @@ public class PartyController : ControllerBase
 
 
     [HttpPost]
-    [Route("New")]
+    [Route("new")]
     public async Task<IActionResult> CreateParty([FromBody] MakePartyDTO dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         PartyUser? user = await _userManager.FindByIdAsync(dto.IdPartyMaker.ToString());
-        if (user == null) return BadRequest("User not found");
+        if (user == null) return NotFound("User not found");
         Party party = new Party
         {
             IdUser = user.Id,
