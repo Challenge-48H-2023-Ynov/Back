@@ -47,7 +47,13 @@ public class AuthController : ControllerBase
     /// <response code="400 + Message"></response>
     /// <response code="401">Erreur de mdp ou username</response>
     /// <response code="200">Token + date d'expiration</response>
-    [AllowAnonymous]
+    /// <remarks>
+    /// {
+    ///     "email": "antoine.capitain@gmail.com",
+    ///     "password": "NMdRx$HqyT8jX6"
+    /// }
+    /// </remarks>
+[AllowAnonymous]
     [HttpPost]
     [Route("Login")]
     public async Task<ActionResult<TokenDTO>> Login([FromBody] LoginDTO dto)
