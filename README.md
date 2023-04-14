@@ -28,7 +28,7 @@ services:
       PID: Express
     user: root
     ports:
-      - '1433:1433'
+      - '55554:1433'
     volumes:
       - 'Party_data:/var/opt/mssql/data'
       - 'Party_log:/var/opt/mssql/log'
@@ -37,7 +37,7 @@ services:
 volumes:
   Party_data: null
   Party_log: null
-  Party_backup: null'
+  Party_backup: null
 ```
 
 ## Configuration
